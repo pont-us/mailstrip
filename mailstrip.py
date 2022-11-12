@@ -9,12 +9,13 @@ is written to standard output.
 By Pontus Lurcock, 2020. Released into the public domain.
 """
 
-import email
 import sys
+import email
+import email.policy
 
 
 def main():
-    message = email.message_from_file(sys.stdin)
+    message = email.message_from_file(sys.stdin, policy=email.policy.SMTP)
     print_headers(message)
     print()
     payload = extract_payload(message)
@@ -30,7 +31,7 @@ def print_headers(message):
 
 def extract_payload(message):
     payload = message
-    while type(payload) == email.message.Message:
+    while type(payload) in (email.message.Message, email.message.EmailMessage):
         payload = payload.get_payload(decode=not payload.is_multipart())
         if type(payload) == list:
             payload = payload[0]
