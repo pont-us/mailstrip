@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-"""Print the important bits of an email message.
+"""Output the important bits of an email message as plain text
 
 Raw email message is read from standard input.
 A plain text representation of selected message headers and content
 is written to standard output.
 
-By Pontus Lurcock, 2020. Released into the public domain.
+By Pontus Lurcock, 2020–2022. Released into the public domain.
 """
 
 import sys
@@ -19,8 +19,7 @@ def main():
     print_headers(message)
     print()
     payload = extract_payload(message)
-    charset = get_charset(message)
-    print(str(payload, encoding=charset))
+    print(payload)
 
 
 def print_headers(message):
@@ -32,7 +31,7 @@ def print_headers(message):
 def extract_payload(message):
     payload = message
     while type(payload) in (email.message.Message, email.message.EmailMessage):
-        payload = payload.get_payload(decode=not payload.is_multipart())
+        payload = payload.get_payload()
         if type(payload) == list:
             payload = payload[0]
     return payload
