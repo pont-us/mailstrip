@@ -30,13 +30,13 @@ def main():
     else:
         output_path = pathlib.Path(args.output_dir)
         output_path.mkdir(parents=True, exist_ok=True)
-        with open(output_path.joinpath("email.txt"), 'w') as fh:
+        with open(str(output_path.joinpath("email.txt")), 'w') as fh:
             write_some_headers_and_body(fh, message)
         for part in message.walk():
             print(part.is_attachment())
             if part.is_attachment():
                 attachment_path = output_path.joinpath(part.get_filename())
-                with open(attachment_path, "wb") as fh:
+                with open(str(attachment_path), "wb") as fh:
                     fh.write(part.get_content())
                 print(part.get_filename())
 
