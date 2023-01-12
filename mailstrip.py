@@ -20,9 +20,11 @@ import pathlib
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("output_dir",
-                        nargs="?",
-                        help="write message and attachments to this directory")
+    parser.add_argument(
+        "output_dir",
+        nargs="?",
+        help="write message and attachments to this directory",
+    )
     args = parser.parse_args()
     message = email.message_from_file(sys.stdin, policy=email.policy.SMTP)
     if args.output_dir is None:
@@ -30,7 +32,7 @@ def main():
     else:
         output_path = pathlib.Path(args.output_dir)
         output_path.mkdir(parents=True, exist_ok=True)
-        with open(str(output_path.joinpath("email.txt")), 'w') as fh:
+        with open(str(output_path.joinpath("email.txt")), "w") as fh:
             write_some_headers_and_body(fh, message)
         for part in message.walk():
             print(part.is_attachment())
@@ -42,8 +44,7 @@ def main():
 
 
 def write_some_headers_and_body(
-        destination,
-        message: email.message.EmailMessage
+    destination, message: email.message.EmailMessage
 ):
     write_headers(destination, message)
     destination.write("\n")
