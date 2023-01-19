@@ -35,12 +35,10 @@ def main():
         with open(str(output_path.joinpath("email.txt")), "w") as fh:
             write_some_headers_and_body(fh, message)
         for part in message.walk():
-            print(part.is_attachment())
             if part.is_attachment():
                 attachment_path = output_path.joinpath(part.get_filename())
                 with open(str(attachment_path), "wb") as fh:
                     fh.write(part.get_content())
-                print(part.get_filename())
 
 
 def write_some_headers_and_body(
