@@ -37,8 +37,10 @@ def main():
         for part in message.walk():
             if part.is_attachment():
                 attachment_path = output_path.joinpath(part.get_filename())
-                with open(str(attachment_path), "wb") as fh:
-                    fh.write(part.get_content())
+                content = part.get_content()
+                mode = "w" if type(content) == str else "wb"
+                with open(str(attachment_path), mode) as fh:
+                    fh.write(content)
 
 
 def write_some_headers_and_body(
