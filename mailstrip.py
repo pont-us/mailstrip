@@ -8,7 +8,7 @@ is written to standard output.
 If an argument is given, it is interpreted as a directory path, and the
 message and its attachments are saved to files in this directory.
 
-By Pontus Lurcock, 2020–2023. Released into the public domain.
+By Pontus Lurcock, 2020–2024. Released into the public domain.
 """
 
 import sys
@@ -35,12 +35,24 @@ def main():
         with open(str(output_path.joinpath("email.txt")), "w") as fh:
             write_some_headers_and_body(fh, message)
         for part in message.walk():
-            if part.is_attachment():
+            if probably_attachment(part):
                 attachment_path = output_path.joinpath(part.get_filename())
                 content = part.get_content()
                 mode = "w" if type(content) == str else "wb"
                 with open(str(attachment_path), mode) as fh:
                     fh.write(content)
+
+
+def probably_attachment(part):
+    if part.is_attachment():
+        return True
+    cd = part.get("content-disposition")
+    # Sometimes a part is an attachment despite having an inline
+    # content-disposition value. In these cases the presence of a filename
+    # is a good clue that the part is actually an attachment.
+    if cd is not None and "filename=" in cd:
+        return True
+    return False
 
 
 def write_some_headers_and_body(
